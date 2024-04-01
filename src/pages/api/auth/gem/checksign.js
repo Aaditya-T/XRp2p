@@ -9,13 +9,16 @@ export default async function handler(req, res) {
         if (token == null) return res.status(401).json({ error: "Unauthorized" });
         const {public_key, address} = jwt.verify(token, process.env.ENC_KEY);
         const { signature } = req.query;
-
+        console.log('add: ', address);
+        console.log('pb: ', public_key);
+        console.log('sg: ', signature);
         const tokenHex = (Buffer.from(token, "utf8")).toString("hex");
         const isVerified = rippleKP.verify(
             tokenHex,
             signature,
             public_key
         )
+        console.log(isVerified);
         if (isVerified) {
             const token = jwt.sign({ xrpAddress: address }, process.env.ENC_KEY);
 
