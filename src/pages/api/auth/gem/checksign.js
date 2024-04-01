@@ -5,6 +5,7 @@ export default async function handler(req, res) {
     try {
         const authHeader = req.headers.authorization;
         const token = authHeader && authHeader.split(" ")[1];
+        res.setHeader('Access-Control-Allow-Origin','*');
         if (token == null) return res.status(401).json({ error: "Unauthorized" });
         const {public_key, address} = jwt.verify(token, process.env.ENC_KEY);
         const { signature } = req.query;
@@ -17,7 +18,7 @@ export default async function handler(req, res) {
         )
         if (isVerified) {
             const token = jwt.sign({ xrpAddress: address }, process.env.ENC_KEY);
-            res.setHeader('Access-Control-Allow-Origin','*');
+
             res.status(200).json({ token: token, address: address });
         } else {
             res.status(400).json({ error: "Signature not verified" });
