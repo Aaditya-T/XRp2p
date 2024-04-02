@@ -5,8 +5,6 @@ export default async function handler(req, res) {
     try {
         const authHeader = req.headers.authorization;
         const { signature, nonce } = req.query;
-        console.log(signature);
-        console.log(nonce);
         const token = authHeader ? authHeader.split(" ")[1] : nonce;
         res.setHeader('Access-Control-Allow-Origin','*');
         if (token == null) return res.status(401).json({ error: "Unauthorized" });

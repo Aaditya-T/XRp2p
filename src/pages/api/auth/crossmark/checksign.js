@@ -4,10 +4,11 @@ const rippleKP = require("ripple-keypairs");
 export default async function handler(req, res) {
     try {
         const authHeader = req.headers.authorization;
-        const token = authHeader && authHeader.split(" ")[1];
+        const { signature, nonce } = req.query;
+        res.setHeader('Access-Control-Allow-Origin','*');
+        const token = authHeader ? authHeader.split(" ")[1] : nonce;
         if (token == null) return res.status(401).json({ error: "Unauthorized" });
-        const { signature } = req.query;
-        const { pubkey: public_key, address } = req.body;
+        let { pubkey: public_key, address } = req.body || req.query;
 
         const isVerified = rippleKP.verify(
             token,
