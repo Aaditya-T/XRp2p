@@ -63,7 +63,7 @@ export default function Home({ xrpAddress, trades }: { xrpAddress: string, trade
                 <TableRow>
                   <TableHead className="w-[100px]">ID</TableHead>
                   <TableHead>Currency</TableHead>
-                  <TableHead>Amount</TableHead>
+                  <TableHead>Amount</TableHead> 
                   <TableHead>Initiater</TableHead> 
                   <TableHead>Type</TableHead>
                   <TableHead className="text-right">Action</TableHead>
@@ -77,7 +77,7 @@ export default function Home({ xrpAddress, trades }: { xrpAddress: string, trade
                     <TableCell>{trade.amount}</TableCell>
                     <TableCell>{trade.initiator}</TableCell>
                     <TableCell className="text-right">{trade.type}</TableCell>
-                    <TableCell>
+                    <TableCell> 
                       <Link href={`/trade/${trade.id}`}>
                         <Button className="w-24 h-8 bg-blue-500 hover:bg-blue-600">
                           Initiate trade
