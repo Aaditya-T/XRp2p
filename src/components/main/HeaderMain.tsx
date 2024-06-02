@@ -17,7 +17,7 @@ export default function HeaderMain({ address }: { address: string }) {
     <header className="flex items-center justify-between p-2">
       <Link href="/" passHref>
         <Image
-          src={"/images/logo.png"}
+          src="/images/logo.png"
           alt="Logo"
           width={70}
           height={20}
