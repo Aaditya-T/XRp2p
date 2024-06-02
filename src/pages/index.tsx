@@ -77,9 +77,9 @@ export default function Home({ xrpAddress, trades }: { xrpAddress: string, trade
                     <TableCell>{trade.amount}</TableCell>
                     <TableCell>{trade.initiator}</TableCell>
                     <TableCell className="text-right">{trade.type}</TableCell>
-                    <TableCell> 
+                    <TableCell className={`${trade.initiator === xrpAddress ? " pointer-events-none" : ""}`}>
                       <Link href={`/trade/${trade.id}`}>
-                        <Button className="w-24 h-8 bg-blue-500 hover:bg-blue-600">
+                        <Button className="w-24 h-8 bg-blue-500 hover:bg-blue-600" disabled={trade.initiator === xrpAddress}>
                           Initiate trade
                         </Button>
                       </Link>
@@ -88,6 +88,13 @@ export default function Home({ xrpAddress, trades }: { xrpAddress: string, trade
                 ))}
               </TableBody>
             </Table>
+          </div>
+
+          {/* a warning to show that it is in early stage of development */}
+          <div className="mt-8">
+            <p className="text-red-500 font-bold">
+              A super simple P2P PROOF OF CONCEPT made for the wavehack hackathon. <br/> A lot of features are missing and the code is not production ready.<br/>If given more time - this prototype would be more polished, i just discovered the hackathon 9 hours before the deadline 😅.
+            </p>
           </div>
         </div>
       </main>
