@@ -21,26 +21,33 @@ import Link from "next/link";
 import HeaderMain from "@/components/main/HeaderMain";
 
 const inter = Inter({ subsets: ["latin"] });
+type Trade = {
+  amount: number;
+  collectionId: string;
+  collectionName: string;
+  created: string;
+  currency: string;
+  id: string;
+  initiated: boolean;
+  initiator: string;
+  type: string;
+  updated: string;
+};
 
-const exampleTrades = [
-  {
-    id: "TRADE001",
-    method: "XRP",
-    amount: 100,
-    initiator: "rtest...",
-    type: "SELL",
-  },
-  {
-    id: "TRADE002",
-    method: "XRP",
-    amount: 400,
-    initiator: "ralice...",
-    type: "BUY",
-  }
-]
+type onGoingTrades = {
+  collectionId: string;
+  collectionName: string;
+  created: string;
+  id: string;
+  updated: string;
+  trade: string;
+  expand: {trade: Trade};
+  counterAddress: string;
+  completed: boolean;
+};
 
-export default function Home({ xrpAddress, trades }: { xrpAddress: string, trades: any[] }) {
-
+export default function Home({ xrpAddress, trades, ongoingTrades }: { xrpAddress: string, trades: Trade[], ongoingTrades: onGoingTrades[] }) {
+  console.log(trades);
   return (
     <>
       <HeaderMain address={xrpAddress} />
@@ -71,6 +78,7 @@ export default function Home({ xrpAddress, trades }: { xrpAddress: string, trade
               </TableHeader>
               <TableBody>
                 {trades?.map((trade, index) => (
+                  !trade.initiated &&
                   <TableRow key={index} className={`${trade.initiator === xrpAddress ? "bg-green-100" : ""}`}>
                     <TableCell>{trade.id}</TableCell>
                     <TableCell>{trade.currency}</TableCell>
@@ -79,8 +87,10 @@ export default function Home({ xrpAddress, trades }: { xrpAddress: string, trade
                     <TableCell className="text-right">{trade.type}</TableCell>
                     <TableCell className={`${trade.initiator === xrpAddress ? " pointer-events-none" : ""}`}>
                       <Link href={`/trade/${trade.id}`}>
-                        <Button className="w-24 h-8 bg-blue-500 hover:bg-blue-600" disabled={trade.initiator === xrpAddress}>
-                          Initiate trade
+                        <Button className="w-24 h-8 bg-blue-500 hover:bg-blue-600" disabled={trade.initiator === xrpAddress || !xrpAddress}>
+                          {
+                            !xrpAddress ? "Connect First" : trade.initiator === xrpAddress ? "Your Trade" : "Initiate Trade"
+                          }
                         </Button>
                       </Link>
                     </TableCell>
@@ -90,11 +100,38 @@ export default function Home({ xrpAddress, trades }: { xrpAddress: string, trade
             </Table>
           </div>
 
-          {/* a warning to show that it is in early stage of development */}
-          <div className="mt-8">
-            <p className="text-red-500 font-bold">
-              A super simple P2P PROOF OF CONCEPT made for the wavehack hackathon. <br/> A lot of features are missing and the code is not production ready.<br/>If given more time - this prototype would be more polished, i just discovered the hackathon 9 hours before the deadline 😅.
-            </p>
+          <hr className="w-full my-8 border-gray-300" />
+
+          <div className="flex mt-8">
+            <Table>
+              <TableCaption>Current ongoing trades</TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[100px]">ID</TableHead>
+                  <TableHead>Currency</TableHead>
+                  <TableHead>Amount</TableHead> 
+                  <TableHead>Counter Address</TableHead> 
+                  <TableHead className="text-right">Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {ongoingTrades?.map((trade, index) => (
+                  <TableRow key={index} className={`${trade.expand.trade.initiator === xrpAddress ? "bg-green-100" : ""}`}>
+                    <TableCell>{trade.id}</TableCell>
+                    <TableCell>{trade.expand.trade.currency}</TableCell>
+                    <TableCell>{trade.expand.trade.amount}</TableCell>
+                    <TableCell>{trade.counterAddress}</TableCell>
+                    <TableCell className="text-right">
+                      <Link href={`/trade/${trade.id}`}>
+                        <Button className="w-24 h-8 bg-blue-500 hover:bg-blue-600">
+                          View Trade
+                        </Button>
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
         </div>
       </main>

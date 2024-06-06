@@ -7,6 +7,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const [xrpAddress, setXrpAddress] = useState<string>("");
   const [cookies, setCookie, removeCookie] = useCookies(["jwt"]);
   const [trades, setTrades] = useState<any[]>([]);
+  const [ongoingTrades, setOngoingTrades] = useState<any[]>([]);
 
   const updateXrpAddress = (address: string) => {
     setXrpAddress(address);
@@ -41,8 +42,22 @@ export default function App({ Component, pageProps }: AppProps) {
       .then((data) => {
         setTrades(data.records);
       });
+ 
+    const url2 = "/api/trade/getInit";
+    fetch(url2, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ token: cookies.jwt }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setOngoingTrades(data?.records?.items);
+      });
+
   }, []);
 
 
-  return <Component {...pageProps} xrpAddress={xrpAddress} updateXrpAddress={updateXrpAddress} trades={trades} />;
+  return <Component {...pageProps} xrpAddress={xrpAddress} updateXrpAddress={updateXrpAddress} trades={trades} ongoingTrades={ongoingTrades} />;
 }

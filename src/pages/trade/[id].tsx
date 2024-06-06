@@ -1,10 +1,13 @@
 import HeaderMain from '@/components/main/HeaderMain';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
 
 const TradePage = ({xrpAddress}: {xrpAddress: string}) => {
     const [chatMessages, setChatMessages] = useState<string[]>([]);
     const [currentStep, setCurrentStep] = useState<number>(1);
+    const [cookies, setCookie] = useCookies(['jwt']);
+
     const router = useRouter();
 
     const id = router.query.id;
@@ -16,6 +19,31 @@ const TradePage = ({xrpAddress}: {xrpAddress: string}) => {
     const handleNextStep = () => {
         setCurrentStep(currentStep + 1);
     };
+
+    useEffect(() => {
+        if (id) {
+            console.log('Trade ID:', id);
+            //initiate trade
+            const url = `/api/trade/initTrade`
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    tradeId: id,
+                    token: cookies.jwt,
+                }),
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    console.log(data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+    }, [id]);
 
     return (
         <>
